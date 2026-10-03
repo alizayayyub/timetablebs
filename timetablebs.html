@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Weekly Timetable</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            min-height: 100vh;
+            background: #f7f5ff;
+            color: #292344;
+        }
+
+        /* MAIN HEADER */
+
+        .top {
+            background: linear-gradient(135deg, #7c5cff, #a78bfa);
+            border-radius: 30px;
+            color: white;
+            box-shadow: 0 18px 40px rgba(124, 92, 255, 0.25);
+        }
+
+        .top h1 {
+            font-size: 38px;
+            font-weight: 700;
+        }
+
+        .top p {
+            font-size: 15px;
+            opacity: 0.9;
+        }
+
+        .calendar-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 22px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 38px;
+        }
+
+        /* INFORMATION CARDS */
+
+        .info-card {
+            background: white;
+            border: 1px solid #eeeaff;
+            border-radius: 22px;
+            box-shadow: 0 8px 25px rgba(43, 35, 68, 0.07);
+            transition: 0.25s;
+        }
+
+        .info-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 14px 30px rgba(43, 35, 68, 0.12);
+        }
+
+        .card-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 13px;
+            background: #f0edff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .info-label {
+            color: #8a849e;
+            font-size: 12px;
+            margin-bottom: 5px;
+        }
+
+        .info-card h3 {
+            font-size: 16px;
+            color: #3b3361;
+        }
+
+        /* SCHEDULE */
+
+        .schedule {
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 12px 35px rgba(43, 35, 68, 0.08);
+        }
+
+        .schedule-title h2 {
+            font-size: 23px;
+            color: #332b54;
+        }
+
+        .schedule-badge {
+            background: #f0edff;
+            color: #6b55d9;
+            padding: 9px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* TABLE */
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        .timetable {
+            min-width: 950px;
+            border-collapse: separate;
+            border-spacing: 7px;
+        }
+
+        .timetable th {
+            background: #30275c;
+            color: white;
+            padding: 16px 10px;
+            border-radius: 14px;
+            font-size: 13px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .timetable th:first-child {
+            background: #6b55d9;
+        }
+
+        .timetable td {
+            text-align: center;
+            vertical-align: middle;
+            padding: 17px 10px;
+            border-radius: 15px;
+            font-size: 13px;
+            font-weight: bold;
+            transition: 0.25s;
+        }
+
+        .timetable td:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 18px rgba(43, 35, 68, 0.12);
+        }
+
+        /* DAYS */
+
+        .day {
+            background: #f0edff !important;
+            color: #604dcc;
+            font-size: 14px;
+        }
+
+        /* SUBJECT COLORS */
+
+        .web {
+            background: #eee9ff !important;
+            color: #6246c7;
+        }
+
+        .db {
+            background: #e5f1ff !important;
+            color: #3478c8;
+        }
+
+        .algorithm {
+            background: #fff1df !important;
+            color: #c67820;
+        }
+
+        .os {
+            background: #ffe8f0 !important;
+            color: #c34b77;
+        }
+
+        .network {
+            background: #e5f8ef !important;
+            color: #319466;
+        }
+
+        .free {
+            background: #f5f5f7 !important;
+            color: #9b98a5;
+            font-weight: normal !important;
+        }
+
+        .timetable small {
+            display: block;
+            margin-top: 5px;
+            font-size: 10px;
+            opacity: 0.7;
+            font-weight: normal;
+        }
+
+        /* LEGEND */
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 12px;
+            color: #777286;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .purple {
+            background: #6246c7;
+        }
+
+        .blue {
+            background: #3478c8;
+        }
+
+        .orange {
+            background: #c67820;
+        }
+
+        .pink {
+            background: #c34b77;
+        }
+
+        .green {
+            background: #319466;
+        }
+
+        /* FOOTER */
+
+        .footer {
+            color: #9994a8;
+            font-size: 12px;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 576px) {
+
+            .top h1 {
+                font-size: 27px;
+            }
+
+            .calendar-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 28px;
+            }
+
+            .top {
+                border-radius: 22px;
+            }
+
+            .schedule {
+                border-radius: 22px;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container-fluid py-4 py-md-5">
+
+    <div class="container">
+
+        <!-- HEADER -->
+
+        <div class="top p-4 p-md-5 mb-4">
+
+            <div class="row align-items-center">
+
+                <div class="col-9">
+
+                    <h1 class="mb-2">
+                        ALIZAY AYYUB Weekly Timetable
+                    </h1>
+
+                    <p class="mb-0">
+                        Stay organized - Stay focused - Make every class count
+                    </p>
+
+                </div>
+
+                <div class="col-3 d-flex justify-content-end">
+
+                    <div class="calendar-icon">
+                        📅
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- INFORMATION CARDS -->
+
+        <div class="row g-3 mb-4">
+
+            <!-- PROGRAM -->
+
+            <div class="col-12 col-sm-6 col-lg-3">
+
+                <div class="info-card p-4 h-100">
+
+                    <div class="card-icon mb-3">
+                        🎓
+                    </div>
+
+                    <p class="info-label mb-1">
+                        PROGRAM
+                    </p>
+
+                    <h3 class="mb-0">
+                        BS Computer Science
+                    </h3>
+
+                </div>
+
+            </div>
+
+
+            <!-- SEMESTER -->
+
+            <div class="col-12 col-sm-6 col-lg-3">
+
+                <div class="info-card p-4 h-100">
+
+                    <div class="card-icon mb-3">
+                        📚
+                    </div>
+
+                    <p class="info-label mb-1">
+                        SEMESTER
+                    </p>
+
+                    <h3 class="mb-0">
+                        5th Semester
+                    </h3>
+
+                </div>
+
+            </div>
+
+
+            <!-- SESSION -->
+
+            <div class="col-12 col-sm-6 col-lg-3">
+
+                <div class="info-card p-4 h-100">
+
+                    <div class="card-icon mb-3">
+                        📅
+                    </div>
+
+                    <p class="info-label mb-1">
+                        SESSION
+                    </p>
+
+                    <h3 class="mb-0">
+                        Fall 2026
+                    </h3>
+
+                </div>
+
+            </div>
+
+
+            <!-- SECTION -->
+
+            <div class="col-12 col-sm-6 col-lg-3">
+
+                <div class="info-card p-4 h-100">
+
+                    <div class="card-icon mb-3">
+                        🏫
+                    </div>
+
+                    <p class="info-label mb-1">
+                        SECTION
+                    </p>
+
+                    <h3 class="mb-0">
+                        BSCS - 5B
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- TIMETABLE -->
+
+        <div class="schedule p-3 p-md-4">
+
+            <!-- SCHEDULE HEADER -->
+
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+
+                <h2 class="mb-0">
+                    Class Schedule
+                </h2>
+
+                <span class="schedule-badge">
+                    MONDAY — FRIDAY
+                </span>
+
+            </div>
+
+
+            <!-- TABLE -->
+
+            <div class="table-wrapper">
+
+                <table class="table timetable mb-0">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>DAY / TIME</th>
+
+                            <th>08:00<br>09:00</th>
+
+                            <th>09:00<br>10:00</th>
+
+                            <th>10:00<br>11:00</th>
+
+                            <th>11:00<br>12:00</th>
+
+                            <th>12:00<br>01:00</th>
+
+                            <th>01:00<br>02:00</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        <!-- MONDAY -->
+
+                        <tr>
+
+                            <td class="day">
+                                MONDAY
+                            </td>
+
+                            <td class="web">
+                                Web Engineering
+                                <small>Room 204</small>
+                            </td>
+
+                            <td class="db">
+                                Database Systems
+                                <small>Room 301</small>
+                            </td>
+
+                            <td class="free">
+                                Break
+                            </td>
+
+                            <td class="algorithm">
+                                Algorithms
+                                <small>Room 205</small>
+                            </td>
+
+                            <td class="os">
+                                Operating Systems
+                                <small>Room 302</small>
+                            </td>
+
+                            <td class="free">
+                                Free
+                            </td>
+
+                        </tr>
+
+
+                        <!-- TUESDAY -->
+
+                        <tr>
+
+                            <td class="day">
+                                TUESDAY
+                            </td>
+
+                            <td class="network">
+                                Computer Networks
+                                <small>Lab 2</small>
+                            </td>
+
+                            <td class="web">
+                                Web Engineering
+                                <small>Room 204</small>
+                            </td>
+
+                            <td class="algorithm">
+                                Algorithms
+                                <small>Room 205</small>
+                            </td>
+
+                            <td class="free">
+                                Break
+                            </td>
+
+                            <td class="db">
+                                Database Systems
+                                <small>Room 301</small>
+                            </td>
+
+                            <td class="free">
+                                Free
+                            </td>
+
+                        </tr>
+
+
+                        <!-- WEDNESDAY -->
+
+                        <tr>
+
+                            <td class="day">
+                                WEDNESDAY
+                            </td>
+
+                            <td class="os">
+                                Operating Systems
+                                <small>Room 302</small>
+                            </td>
+
+                            <td class="free">
+                                Free
+                            </td>
+
+                            <td class="network">
+                                Computer Networks
+                                <small>Lab 2</small>
+                            </td>
+
+                            <td class="algorithm">
+                                Algorithms
+                                <small>Room 205</small>
+                            </td>
+
+                            <td class="free">
+                                Break
+                            </td>
+
+                            <td class="web">
+                                Web Engineering
+                                <small>Room 204</small>
+                            </td>
+
+                        </tr>
+
+
+                        <!-- THURSDAY -->
+
+                        <tr>
+
+                            <td class="day">
+                                THURSDAY
+                            </td>
+
+                            <td class="db">
+                                Database Systems
+                                <small>Room 301</small>
+                            </td>
+
+                            <td class="algorithm">
+                                Algorithms
+                                <small>Room 205</small>
+                            </td>
+
+                            <td class="web">
+                                Web Engineering
+                                <small>Room 204</small>
+                            </td>
+
+                            <td class="free">
+                                Break
+                            </td>
+
+                            <td class="network">
+                                Computer Networks
+                                <small>Lab 2</small>
+                            </td>
+
+                            <td class="os">
+                                Operating Systems
+                                <small>Room 302</small>
+                            </td>
+
+                        </tr>
+
+
+                        <!-- FRIDAY -->
+
+                        <tr>
+
+                            <td class="day">
+                                FRIDAY
+                            </td>
+
+                            <td class="network">
+                                Computer Networks
+                                <small>Lab 2</small>
+                            </td>
+
+                            <td class="os">
+                                Operating Systems
+                                <small>Room 302</small>
+                            </td>
+
+                            <td class="free">
+                                Free
+                            </td>
+
+                            <td class="db">
+                                Database Systems
+                                <small>Room 301</small>
+                            </td>
+
+                            <td class="algorithm">
+                                Algorithms
+                                <small>Room 205</small>
+                            </td>
+
+                            <td class="free">
+                                Free
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- LEGEND -->
+
+            <div class="d-flex flex-wrap gap-4 mt-4">
+
+                <div class="legend-item">
+                    <span class="dot purple"></span>
+                    Web Engineering
+                </div>
+
+                <div class="legend-item">
+                    <span class="dot blue"></span>
+                    Database
+                </div>
+
+                <div class="legend-item">
+                    <span class="dot orange"></span>
+                    Algorithms
+                </div>
+
+                <div class="legend-item">
+                    <span class="dot pink"></span>
+                    Operating Systems
+                </div>
+
+                <div class="legend-item">
+                    <span class="dot green"></span>
+                    Networks
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- FOOTER -->
+
+        <div class="footer text-center mt-4">
+
+            Designed by ALIZAY AYYUB - BSCS 5B - 2026
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
